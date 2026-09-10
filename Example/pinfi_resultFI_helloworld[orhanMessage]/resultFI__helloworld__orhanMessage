@@ -1,0 +1,6 @@
+Application name: helloworld
+FI function name: orhanMessage
+Number of FI tested: 5
+#of Success: 3
+#of SDC: 1
+#of Crash: 1

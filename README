@@ -1,0 +1,91 @@
+RegionPinFI - Region-Based Fault Injection Framework
+This project is developed using the Intel Pin (v3.5) dynamic binary instrumentation framework to perform assembly-level fault injection tests on C/C++ applications within a Linux/Ubuntu environment. It dynamically analyzes the instruction ranges of specific target functions (regions) and automatically reports the effects of hardware soft errors on program reliability by classifying outcomes into Success, SDC, or Crash.
+
+
+------------------------------------------------------------------------------------------------------------------------------
+📋 Prerequisites
+Before you begin, ensure you have the following installed on your system:
+* **Linux/Ubuntu** Operating System
+* **Intel Pin v3.5**
+* **GCC/G++** Compiler
+* **Python 3.x**
+
+*(Note: **Intel Pin v3.5** is already included within the `RegionPinFI` directory of this repository. You do not need to download or install it separately.)*
+
+------------------------------------------------------------------------------------------------------------------------------
+🛠️ Build and Installation
+The custom RegionPinFI codes are built directly on top of the bundled Pin v3.5 version.
+Intel Pin v3.5 must be installed on your system, and the necessary environment variables must be configured. To compile the Pintools, navigate to the source directory and run the make command.
+
+1. Open your terminal and navigate to the tool directory:
+    cd /path/to/RegionPinFI/source/tools/pinfi
+2. Compile the Pintools:
+    make all
+This process will generate the instcount.so, faultinjection.so, and instcategory.so libraries inside the obj-intel64/ directory.
+
+
+------------------------------------------------------------------------------------------------------------------------------
+⚠️ Important Configuration Step
+Before running any fault injection campaigns, you must manually update the hardcoded paths in the Python automation script to match your local system environment.
+
+Open the faultinject_funcName.py script and modify the following variables at the top of the file with your absolute paths:
+    pinbin = "/path/to/your/pin/executable"
+    instcategorylib = "/path/to/your/RegionPinFI/source/tools/pinfi/obj-intel64/instcategory.so"
+    instcountlib = "/path/to/your/RegionPinFI/source/tools/pinfi/obj-intel64/instcount.so"
+    filib = "/path/to/your/RegionPinFI/source/tools/pinfi/obj-intel64/faultinjection.so"
+
+
+------------------------------------------------------------------------------------------------------------------------------
+🚀 Usage
+Automated fault injection experiments are managed through the faultinject_funcName.py script located in the main directory.  
+
+Command Format:
+    python faultinject_funcName.py <application_name> <target_function_name> <number_of_fi>
+
+Example Run (Helloworld Application):
+To inject 100 faults into the main or orhanMessage functions of the provided helloworld application:
+    python faultinject_funcName.py helloworld main 100
+    python faultinject_funcName.py helloworld orhanMessage 100
+
+
+------------------------------------------------------------------------------------------------------------------------------
+⚙️ How It Works (Step-by-Step Execution)
+When the Python script is triggered, the execution follows these steps:
+
+1. Dynamic Instruction Counting and .txt File Generation (instcount.cpp)
+In the first phase, the script executes the instcount.so tool. This tool monitors the error-free (baseline) execution of the application from start to finish.
+    * The Pin tool increments the global_inst_counter variable for every valid assembly instruction executed.  
+    * When the execution enters the externally provided target function (e.g., main), it records the starting value of the instruction counter.  
+    * When the function exits, it records the ending value. If the function is called multiple times, it aggregates all these [start, end] ranges.  
+    * Result: Once the application finishes running, a file named pin.instcount_<function_name>.txt is created, detailing the exact dynamic instruction ranges where the target function was active. (e.g., pin.instcount_main.txt).  
+
+2. Golden Output Generation
+During this initial error-free execution phase, the console and file outputs of the application are saved to baseline/golden_output to serve as the baseline reference.
+
+3. Fault Injection (faultinjection.cpp)
+A loop is initiated for the specified run_number (number of tests). For each test run, the faultinjection.so tool is utilized:
+    * Upon startup, the tool reads the pin.instcount_<function_name>.txt file generated in the first step.
+    * It selects a completely random fi_inject_instance (target instruction number) from within the function's valid instruction ranges.
+    * As the program executes normally, when the counter reaches this randomly selected instruction instance, the tool injects a fault by flipping a random bit (bit-flip) in the destination register or memory address written by that instruction.
+
+4. Result Comparison and Classification
+Following each fault injection test, the newly generated output of the program (outputfile-X) is compared byte-by-byte against the reference file (golden_output).
+
+
+------------------------------------------------------------------------------------------------------------------------------
+📁 Output Folders and Reporting
+Once the tests are complete, a directory formatted as pinfi_resultFI_<application_name>[<function_name>]/ is created in the application's working directory. This folder is organized as follows:
+    * baseline/golden_output: Contains the original, correct output of the application before any faults were injected.
+    * prog_output/: Stores the standard console outputs of each individual fault-injected test run from 0 to N (e.g., outputfile-0, outputfile-1).
+    * error_output/: If the injected fault causes the program to crash (e.g., Segmentation fault, abort) or enter an infinite loop (Timeout), the system logs for these errors are kept here (e.g., errorfile-1).
+    * resultFI__<application_name>__<function_name>: The overall summary report of the FI experiment. It provides a mathematical breakdown of all test outcomes:
+        #of Success: Cases where a fault was injected, but the program did not crash, and the output matched the golden_output exactly.
+        #of SDC (Silent Data Corruption): Highly critical cases where the program completed execution without crashing, but the generated output differed from the golden_output.
+        #of Crash: Cases where the injected fault caused the program to be terminated by the operating system or resulted in a timeout.
+
+
+------------------------------------------------------------------------------------------------------------------------------
+📊 Vulnerability Estimation & Data Analysis
+This fault injection framework serves as the data collection foundation for a broader research objective: Region-Based Program Soft Error Vulnerability Estimation Using Machine Learning.
+
+By gathering the Success, SDC, and Crash rates from thousands of injected faults and correlating them with distinct hardware and dynamic execution features, the resulting dataset can be utilized to train regression models. This approach ultimately allows for the rapid and robust estimation of function-level software reliability characteristics, eliminating the need to run exhaustive, time-consuming fault injection campaigns in the future.

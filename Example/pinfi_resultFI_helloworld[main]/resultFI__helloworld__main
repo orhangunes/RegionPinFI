@@ -1,0 +1,6 @@
+Application name: helloworld
+FI function name: main
+Number of FI tested: 5
+#of Success: 4
+#of SDC: 0
+#of Crash: 1
