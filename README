@@ -14,6 +14,7 @@ O. Güneş and S. Arslan, "A Function-Level Fault Injection and Machine Learning
 
 =================================================================================================================
 📋 Prerequisites
+
 Before you begin, ensure you have the following installed on your system:
 * **Linux/Ubuntu** Operating System
 * **Intel Pin v3.5**
@@ -24,6 +25,7 @@ Before you begin, ensure you have the following installed on your system:
 
 =================================================================================================================
 🛠️ Build and Installation
+
 The custom RegionPinFI codes are built directly on top of the bundled Pin v3.5 version.
 Intel Pin v3.5 must be installed on your system, and the necessary environment variables must be configured. To compile the Pintools, navigate to the source directory and run the make command.
 
@@ -36,6 +38,7 @@ This process will generate the instcount.so, faultinjection.so, and instcategory
 
 =================================================================================================================
 ⚠️ Important Configuration Step
+
 Before running any fault injection campaigns, you must manually update the hardcoded paths in the Python automation script to match your local system environment.
 
 Open the faultinject_funcName.py script and modify the following variables at the top of the file with your absolute paths:
@@ -47,6 +50,7 @@ Open the faultinject_funcName.py script and modify the following variables at th
 
 =================================================================================================================
 🚀 Usage
+
 Automated fault injection experiments are managed through the faultinject_funcName.py script located in the main directory.  
 
 Command Format:
@@ -60,6 +64,7 @@ To inject 100 faults into the main or orhanMessage functions of the provided hel
 
 =================================================================================================================
 ⚙️ How It Works (Step-by-Step Execution)
+
 When the Python script is triggered, the execution follows these steps:
 
 1. Dynamic Instruction Counting and .txt File Generation (instcount.cpp)
@@ -84,6 +89,7 @@ Following each fault injection test, the newly generated output of the program (
 
 =================================================================================================================
 📁 Output Folders and Reporting
+
 Once the tests are complete, a directory formatted as pinfi_resultFI_<application_name>[<function_name>]/ is created in the application's working directory. This folder is organized as follows:
     * baseline/golden_output: Contains the original, correct output of the application before any faults were injected.
     * prog_output/: Stores the standard console outputs of each individual fault-injected test run from 0 to N (e.g., outputfile-0, outputfile-1).
@@ -96,6 +102,7 @@ Once the tests are complete, a directory formatted as pinfi_resultFI_<applicatio
 
 =================================================================================================================
 📊 Vulnerability Estimation & Data Analysis
+
 This fault injection framework serves as the data collection foundation for a broader research objective: Region-Based Program Soft Error Vulnerability Estimation Using Machine Learning.
 
 By gathering the Success, SDC, and Crash rates from thousands of injected faults and correlating them with distinct hardware and dynamic execution features, the resulting dataset can be utilized to train regression models. This approach ultimately allows for the rapid and robust estimation of function-level software reliability characteristics, eliminating the need to run exhaustive, time-consuming fault injection campaigns in the future.
