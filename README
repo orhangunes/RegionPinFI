@@ -1,5 +1,5 @@
 =================================================================================================================
-💡 What is RegionPinFI - Region-Based Fault Injection Framework
+# 💡 What is RegionPinFI - Region-Based Fault Injection Framework
 
 RegionPinFI is developed using the Intel Pin (v3.5) dynamic binary instrumentation framework to perform assembly-level fault injection tests on C/C++ applications within a Linux/Ubuntu environment. It dynamically analyzes the instruction ranges of specific target functions (regions) and automatically reports the effects of hardware soft errors on program reliability by classifying outcomes into Success, SDC, or Crash.
 
