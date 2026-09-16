@@ -1,10 +1,10 @@
-=================================================================================
+=================================================================================================================
 What is RegionPinFI - Region-Based Fault Injection Framework
 
 RegionPinFI is developed using the Intel Pin (v3.5) dynamic binary instrumentation framework to perform assembly-level fault injection tests on C/C++ applications within a Linux/Ubuntu environment. It dynamically analyzes the instruction ranges of specific target functions (regions) and automatically reports the effects of hardware soft errors on program reliability by classifying outcomes into Success, SDC, or Crash.
 
 
-=================================================================================
+=================================================================================================================
 📝 Citation
 
 More information can be found in our paper. If you use this framework in your research, please cite our publication:
@@ -12,7 +12,7 @@ More information can be found in our paper. If you use this framework in your re
 O. Güneş and S. Arslan, "A Function-Level Fault Injection and Machine Learning Framework for Reliability Analysis," in IEEE Access, vol. 14, pp. 56234-56253, 2026, doi: 10.1109/ACCESS.2026.3682878.
 
 
-=================================================================================
+=================================================================================================================
 📋 Prerequisites
 Before you begin, ensure you have the following installed on your system:
 * **Linux/Ubuntu** Operating System
@@ -22,7 +22,7 @@ Before you begin, ensure you have the following installed on your system:
 
 *(Note: **Intel Pin v3.5** is already included within the `RegionPinFI` directory of this repository. You do not need to download or install it separately.)*
 
-=================================================================================
+=================================================================================================================
 🛠️ Build and Installation
 The custom RegionPinFI codes are built directly on top of the bundled Pin v3.5 version.
 Intel Pin v3.5 must be installed on your system, and the necessary environment variables must be configured. To compile the Pintools, navigate to the source directory and run the make command.
@@ -34,7 +34,7 @@ Intel Pin v3.5 must be installed on your system, and the necessary environment v
 This process will generate the instcount.so, faultinjection.so, and instcategory.so libraries inside the obj-intel64/ directory.
 
 
-=================================================================================
+=================================================================================================================
 ⚠️ Important Configuration Step
 Before running any fault injection campaigns, you must manually update the hardcoded paths in the Python automation script to match your local system environment.
 
@@ -45,7 +45,7 @@ Open the faultinject_funcName.py script and modify the following variables at th
     filib = "/path/to/your/RegionPinFI/source/tools/pinfi/obj-intel64/faultinjection.so"
 
 
-=================================================================================
+=================================================================================================================
 🚀 Usage
 Automated fault injection experiments are managed through the faultinject_funcName.py script located in the main directory.  
 
@@ -58,7 +58,7 @@ To inject 100 faults into the main or orhanMessage functions of the provided hel
     python faultinject_funcName.py helloworld orhanMessage 100
 
 
-=================================================================================
+=================================================================================================================
 ⚙️ How It Works (Step-by-Step Execution)
 When the Python script is triggered, the execution follows these steps:
 
@@ -82,7 +82,7 @@ A loop is initiated for the specified run_number (number of tests). For each tes
 Following each fault injection test, the newly generated output of the program (outputfile-X) is compared byte-by-byte against the reference file (golden_output).
 
 
-=================================================================================
+=================================================================================================================
 📁 Output Folders and Reporting
 Once the tests are complete, a directory formatted as pinfi_resultFI_<application_name>[<function_name>]/ is created in the application's working directory. This folder is organized as follows:
     * baseline/golden_output: Contains the original, correct output of the application before any faults were injected.
@@ -94,7 +94,7 @@ Once the tests are complete, a directory formatted as pinfi_resultFI_<applicatio
         #of Crash: Cases where the injected fault caused the program to be terminated by the operating system or resulted in a timeout.
 
 
-=================================================================================
+=================================================================================================================
 📊 Vulnerability Estimation & Data Analysis
 This fault injection framework serves as the data collection foundation for a broader research objective: Region-Based Program Soft Error Vulnerability Estimation Using Machine Learning.
 
